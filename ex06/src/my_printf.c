@@ -3,6 +3,34 @@
 #include <string.h>
 #include <stdio.h>
 
+unsigned int my_strlen(char *str) {
+  unsigned i;
+  for(i = 0; *(str + i) != '\0'; i++);
+  return i;
+}
+
+int my_atoi(const char *nptr) {
+  int i = 0;
+  char minus = 0;
+
+  if (*nptr == '-') {
+    nptr++;
+    minus = 1;
+  }
+  while (*nptr != '\0') {
+    if (*nptr >= '0' && *nptr <= '9') {
+      i *= 10;
+      i += *nptr - '0';
+    }
+    else {
+      break;
+    }
+    nptr++;
+  }
+
+  return (minus)? i*=-1 : i;
+}
+
 char* my_itoa(int nmb) {
   char *ptr, *buf;
   buf = malloc(16 * sizeof(char));
@@ -11,8 +39,7 @@ char* my_itoa(int nmb) {
 
   if (nmb < 0) {
     nmb = -1 * nmb;
-    *buf = '-';
-    buf++;
+    *buf++ = '-';
   }
 
   n = nmb;
@@ -24,8 +51,7 @@ char* my_itoa(int nmb) {
 
   while (i > 0) {
     n = nmb / i;
-    *buf = '0' + n;
-    buf++;
+    *buf++ = '0' + n;
     nmb -= i * n;
     i /= 10;
   }
@@ -57,8 +83,7 @@ int my_printf(const char* format, ...) {
       format++;
       while(*format != ' ' && *format != '\0') {
         if(*format == '%'){
-          *str = '%';
-          str++;
+          *str++ = '%';
           format++;
           break;
         }
@@ -66,13 +91,11 @@ int my_printf(const char* format, ...) {
           symb = '0';
           format++;
         }
-        while(*format >= '0' && *format <= '9') {
-          *padd_str = *format;
-          padd_str++;
-          format++;
-        }
+        while(*format >= '0' && *format <= '9')
+          *padd_str++ = *format++;
+
         *padd_str = '\0';
-        padding = atoi(padd_str_init);
+        padding = my_atoi(padd_str_init);
         if(*format == 's'){
           st = va_arg(arg_list, char *);
         }
@@ -82,19 +105,15 @@ int my_printf(const char* format, ...) {
         }
         padding -= strlen(st);
         while(padding-- > 0) *str++ = (symb)?symb:' ';
-        while(*st != '\0') {
-          *str = *st;
-          str++;
-          st++;
-        }
+        while(*st != '\0')
+          *str++ = *st++;
+
         format++;
         break;
       }
       continue;
     }
-    *str = *format;
-    str++;
-    format++;
+    *str++ = *format++;
   }
   *str = '\0';
 
@@ -104,16 +123,3 @@ int my_printf(const char* format, ...) {
   free(str_start_ptr);
   return 0;
 }
-
-/*int main() {
-    my_printf("%s\n", "Hello Printf");
-  my_printf("We need 100%% of %s\n", "use case");
-  my_printf("It's %s's %s (%s)\n", "iGor", "phone", "TEXT");
-  my_printf("[%10s] [%4s] [%8s] [%12s]\n", "THIS", "IS", "PADDED", "TEXT");
-  my_printf("%d\n", 42);
-  my_printf("%d %s\n", 42, "is the answer");
-  my_printf("%010d %s\n", 42, "was padded on 10");
-  my_printf("%10d %s\n", 42, "was also padded using spaces");
-
-  return 0;
- }*/
