@@ -8,13 +8,14 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <signal.h>
+#include <unistd.h>
 #include "hash.h"
+#include "builtins.h"
 
 char **g_envv;
 
 void	exit_shell(void) {
 	free(g_envv);
-	write(1, "\n", 1);
 	exit(0);
 }
 
@@ -45,7 +46,29 @@ void exec_command(hashtable_t *ht,char *input) {
     *str++ = *input++;
   }
   *str = '\0';
-  printf("%s\n", str_ptr);
+
+  if (strcmp("env", str_ptr) == 0)
+    env(ht, input);
+  else if (strcmp("export", str_ptr) == 0)
+    export(ht, input);
+  else if (strcmp("exit", str_ptr) == 0)
+    exit_shell();
+  else if(strlen(str_ptr) > 0)
+    printf("Command not found: %s\n", str_ptr);
+  else {
+    pid_t pid;
+
+    pid = fork();
+    if (pid < 0) {
+      printf("ERROR\n");
+    }
+    else if(pid == 0) {
+      execlp("/home/den/minishell/ex11/test", NULL);
+    }
+    else {
+      wait(NULL);
+    }
+  }
 }
 
 static void	 get_input(hashtable_t *ht) {
@@ -76,7 +99,7 @@ void	display_msg(void) {
 
 	cwd = getcwd(buff, 511);
   write(1,cwd,strlen(cwd));
-  write(1, " $ ",strlen(" $ "));
+  write(1, " $ ", 3);
 }
 
 void	signal_handler(int signo) {
@@ -91,6 +114,9 @@ int main(int argc, char **argv, char **envv) {
   int		ret;
   char	**commands;
   hashtable_t *ht;
+
+  ht = hash_create(64);
+
   init_envv(argc,argv,envv);
   while(1) {
     display_msg();
