@@ -26,7 +26,7 @@ fclean: 		clean
 re: 				fclean all
 
 test:				re
-						@(./$(NAME)) < src/test_input.txt
+						@(./$(NAME))
 
 debug:			re
 						valgrind -v --leak-check=full --track-origins=yes ./$(NAME)

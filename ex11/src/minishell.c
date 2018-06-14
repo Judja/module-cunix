@@ -54,10 +54,10 @@ static void	 get_input(char **input) {
 
 void	display_msg(void) {
 	char	*cwd;
-	char	buff[4096 + 1];
+	char	buff[256];
 	char	*parsed_cwd;
 
-	cwd = getcwd(buff, 4096);
+	cwd = getcwd(buff, 256);
   write(1,cwd,strlen(cwd));
 	free(parsed_cwd);
   write(1, " $ ",strlen(" $ "));
@@ -76,12 +76,16 @@ int main(int argc, char **argv, char **envv) {
   char	*input;
   int		ret;
   char	**commands;
+
   init_envv(argc,argv,envv);
+
   while(1) {
     display_msg();
     signal(SIGINT, signal_handler);
     get_input(&input);
   }
+
   free(g_envv);
+
   return 0;
 }
