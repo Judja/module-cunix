@@ -30,77 +30,75 @@ void	init_envv(int args, char **argv, char **envv) {
 	}
 }
 
-static void	 get_input(char **input) {
+void exec_command(hashtable_t *ht,char *input) {
+  char *str, *str_ptr;
+
+  str = malloc(32 * sizeof(char));
+  str_ptr = str;
+
+  while(*input != '\0') {
+    if(*input == ' ') {
+      *str = '\0';
+      input++;
+      break;
+    }
+    *str++ = *input++;
+  }
+  *str = '\0';
+  printf("%s\n", str_ptr);
+}
+
+static void	 get_input(hashtable_t *ht) {
 	int		ret;
 	char	buf;
 	int		i;
 	int		count;
-
-	*input = (char *)malloc(sizeof(char) + 1);
+  char *input = (char *)malloc(512 * sizeof(char));
+  char *ptr = input;
 	count = 1;
 	i = 0;
 	while ((ret = read(0, &buf, 1)) && buf != '\n') {
-		*(*input + i++) = buf;
-		*input = realloc(*input,count + 1);
+		*(input + i++)= buf;
 		count++;
 	}
-	*(*input + i) = '\0';
+	*(input + i) = '\0';
 	if (!ret) {
-		free(*input);
+    free(ptr);
 		exit_shell();
 	}
-	if ((strchr(*input, '$') != NULL) || (strchr(*input, '~') != NULL)) {}
-//	  	*input = parse_input(*input);
+  exec_command(ht,ptr);
 }
 
 void	display_msg(void) {
 	char	*cwd;
-	char	buff[256];
+	char	buff[512];
 	char	*parsed_cwd;
 
-	cwd = getcwd(buff, 256);
+	cwd = getcwd(buff, 511);
   write(1,cwd,strlen(cwd));
-	free(parsed_cwd);
   write(1, " $ ",strlen(" $ "));
 }
 
 void	signal_handler(int signo) {
 	if (signo == SIGINT) {
-		puts("\n");
+		puts("");
   	display_msg();
 		signal(SIGINT, signal_handler);
 	}
 }
 
-
 int main(int argc, char **argv, char **envv) {
-  char	*input;
   int		ret;
   char	**commands;
+  hashtable_t *ht;
+  init_envv(argc,argv,envv);
+  while(1) {
+    display_msg();
+    signal(SIGINT, signal_handler);
+    get_input(ht);
+  }
 
-//  init_envv(argc,argv,envv);
-
-  hashtable_t *vars;
-
-  vars = hash_create(4);
-
-  hash_set(vars, "ls", "privetik");
-  hash_set(vars, "echo", "1111");
-  hash_set(vars, "fff", "shjud");
-  hash_set(vars, "fff", "f_new");
-  hash_set(vars, "rge", "nnn");
-  hash_set(vars, "gggg", "gertui");
-
-  hash_print(vars);
-
-  printf("BY KEY TEST %s\n", (const char*)hash_get(vars, "ls"));
-//  while(1) {
-//    display_msg();
-//   signal(SIGINT, signal_handler);
-//    get_input(&input);
-//  }
-
-  //free(g_envv);
+  free(g_envv);
 
   return 0;
 }
