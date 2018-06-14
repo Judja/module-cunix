@@ -8,6 +8,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <signal.h>
+#include "hash.h"
 
 char **g_envv;
 
@@ -77,15 +78,29 @@ int main(int argc, char **argv, char **envv) {
   int		ret;
   char	**commands;
 
-  init_envv(argc,argv,envv);
+//  init_envv(argc,argv,envv);
 
-  while(1) {
-    display_msg();
-    signal(SIGINT, signal_handler);
-    get_input(&input);
-  }
+  hashtable_t *vars;
 
-  free(g_envv);
+  vars = hash_create(4);
+
+  hash_set(vars, "ls", "privetik");
+  hash_set(vars, "echo", "1111");
+  hash_set(vars, "fff", "shjud");
+  hash_set(vars, "fff", "f_new");
+  hash_set(vars, "rge", "nnn");
+  hash_set(vars, "gggg", "gertui");
+
+  hash_print(vars);
+
+  printf("BY KEY TEST %s\n", (const char*)hash_get(vars, "ls"));
+//  while(1) {
+//    display_msg();
+//   signal(SIGINT, signal_handler);
+//    get_input(&input);
+//  }
+
+  //free(g_envv);
 
   return 0;
 }

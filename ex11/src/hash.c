@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include "linked_list.h"
 
-hashtable_t     *hash_create(unsigned int size) {
+hashtable_t *hash_create(unsigned int size) {
   hashtable_t *new_table;
 
   if (size < 1)
@@ -19,14 +19,14 @@ hashtable_t     *hash_create(unsigned int size) {
 
   new_table->size = size;
 
-    return new_table;
+  return new_table;
 }
 
-void            hash_destroy(hashtable_t *ht, void (*fp)(void *data)) {
+void hash_destroy(hashtable_t *ht) {
   for(int i = 0; i < ht->size; i++) {
     if (ht->table[i] != NULL) {
       node_t *ptr = ht->table[i];
-      list_destroy(&ptr, fp);
+      list_destroy(&ptr);
     }
   }
 
@@ -34,33 +34,36 @@ void            hash_destroy(hashtable_t *ht, void (*fp)(void *data)) {
   free(ht);
 }
 
-unsigned int    hash_func(char *key) {
+unsigned int hash_func(char *key) {
   if (key == NULL) return 0;
   unsigned int rv = 0;
 
   while (*key != '\0') {
-    rv += *key;
+    rv = rv * 5 + *key;
     key++;
   }
 
   return rv;
 }
 
-void            hash_set(hashtable_t *ht, char *key, void *ptr, void (*fp)(void *data)) {
+void hash_set(hashtable_t *ht, char *key, void *ptr) {
   int index = hash_func(key) % ht->size;
 
-  fp(ptr);
-
-  if(ht->table[index] == NULL) ht->table[index] = list_create(ptr);
+  if(ht->table[index] == NULL)
+    ht->table[index] = list_create(ptr, key);
   else
-    list_push(ht->table[index], ptr);
+    list_push(ht->table[index], ptr, key);
 }
 
-void            *hash_get(hashtable_t *ht, char *key) {
+const void *hash_get(hashtable_t *ht, char *key) {
   int index = hash_func(key) % ht->size;
 
   if(ht->table[index] == NULL) return NULL;
 
+  return find_by_key(ht->table[index], key);
+}
 
-  return ((node_t*)ht->table[index])->data;
+void hash_print(hashtable_t *ht) {
+  for (int i = 0; i < ht->size; i++)
+    list_print((node_t*)ht->table[i]);
 }

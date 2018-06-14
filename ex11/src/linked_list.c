@@ -29,7 +29,19 @@ void    list_destroy(node_t **head) {
 
 void    list_push(node_t *head, void *data, void *key) {
   if (head == NULL) return;
-  while (head->next) head = head->next;
+  while (head->next) {
+    if (strcmp(key, (char*)head->key) == 0) {
+      head->data = data;
+      return;
+    }
+    head = head->next;
+  }
+
+  if (strcmp(key, (char*)head->key) == 0) {
+    head->data = data;
+    return;
+  }
+
   head->next = malloc(sizeof(node_t));
 
   head = head->next;
@@ -121,10 +133,13 @@ void    list_print(node_t *head) {
     head = head->next;
   }
 }
+
 const void *find_by_key(node_t *head,char *key) {
    while(head) {
      if(strcmp(key,(char*)head->key) == 0)
        return head->data;
      head = head->next;
    }
+
+   return NULL;
 }
