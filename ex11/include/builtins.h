@@ -7,4 +7,8 @@ int export(hashtable_t* env, const char* args);
 
 int env(hashtable_t* env, const char* args);
 
+int echo(hashtable_t* env, const char* args);
+
+int ls(hashtable_t* env, const char* args);
+
 #endif

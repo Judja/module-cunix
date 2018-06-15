@@ -1,5 +1,7 @@
 #include "builtins.h"
 #include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
 int export(hashtable_t* env, const char *args) {
   char *var, *value, *var_ptr, *value_ptr;
@@ -23,17 +25,14 @@ int export(hashtable_t* env, const char *args) {
 
   args++;//skip '='
 
-  if(*args == '"') {
-    args++;
-    while (*args != '\0') {
-      if(*args == '"') {
-        *value = '\0';
-        hash_set(env, var_ptr, value_ptr);
+  while(1) {
+    if(*args == ' ' || *args == '\0') {
+      *value = '\0';
+      hash_set(env, var_ptr, value_ptr);
 
-        return 0;
-      }
-      *value++ = *args++;
+      return 0;
     }
+    *value++ = *args++;
   }
 
   return -1;
@@ -41,4 +40,13 @@ int export(hashtable_t* env, const char *args) {
 
 int env(hashtable_t* env, const char *args) {
   hash_print(env);
+
+  return 0;
 }
+
+int echo(hashtable_t* env, const char *args) {
+  write(1, args, strlen(args));
+
+  return 0;
+}
+

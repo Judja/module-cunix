@@ -10,12 +10,12 @@ SRCS				:= $(wildcard src/*.c)
 
 OBJS				:= $(SRCS:.c=.o)
 
-NAME				:= myshell_test
+NAME				:= minishell
 
 all:				$(NAME)
 
 $(NAME):		$(OBJS)
-						$(CC) -o $(NAME) $(OBJS) $(LDFLAGS)
+						$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LDFLAGS)
 
 clean:
 						$(RM) $(OBJS)
@@ -26,7 +26,8 @@ fclean: 		clean
 re: 				fclean all
 
 test:				re
-						@(./$(NAME))
+						@(./$(NAME) < input > output )
+						@(diff -q verif output && echo "Test success" || echo "Test Fails")
 
 debug:			re
 						valgrind -v --leak-check=full --track-origins=yes ./$(NAME)

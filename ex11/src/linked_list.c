@@ -129,7 +129,10 @@ void    *list_remove(node_t **head, int pos) {
 
 void    list_print(node_t *head) {
   while(head) {
-    printf("%s -> %s \n", (char*)head->key, (char*)head->data);
+    write(1, "\n", 1);
+    write(1, head->key, strlen(head->key));
+    write(1, ": ", 2);
+    write(1, head->data, strlen(head->data));
     head = head->next;
   }
 }

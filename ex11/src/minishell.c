@@ -12,26 +12,9 @@
 #include "hash.h"
 #include "builtins.h"
 
-char **g_envv;
+#define LSH_RL_BUFSIZE 1024
 
-void	exit_shell(void) {
-	free(g_envv);
-	exit(0);
-}
-
-void	init_envv(int args, char **argv, char **envv) {
-	int		i;
-	(void)args;
-	(void)argv;
-	g_envv = (char **)malloc(sizeof(char *) * (strlen(*envv) + 1));
-	i = -1;
-	while (envv[++i]) {
-		if (!(g_envv[i] = strdup(envv[i])))
-			exit_shell();
-	}
-}
-
-void exec_command(hashtable_t *ht,char *input) {
+int exec_command(hashtable_t *ht,char *input) {
   char *str, *str_ptr;
 
   str = malloc(32 * sizeof(char));
@@ -52,26 +35,49 @@ void exec_command(hashtable_t *ht,char *input) {
   else if (strcmp("export", str_ptr) == 0)
     export(ht, input);
   else if (strcmp("exit", str_ptr) == 0)
-    exit_shell();
+    return 1;
+  else if(strcmp("echo", str_ptr) == 0)
+    echo(ht, input);
   else if(strlen(str_ptr) > 0)
     printf("Command not found: %s\n", str_ptr);
-  else {
-    pid_t pid;
-
-    pid = fork();
-    if (pid < 0) {
-      printf("ERROR\n");
-    }
-    else if(pid == 0) {
-      execlp("/home/den/minishell/ex11/test", NULL);
-    }
-    else {
-      wait(NULL);
-    }
-  }
+  return 0;
 }
 
-static void	 get_input(hashtable_t *ht) {
+int process_vars(hashtable_t *ht, char **input) {
+  char *iptr, *str_ptr, *str;
+  char *word, *word_ptr;
+
+  str_ptr = malloc(512 * sizeof(char));
+  word_ptr = malloc(32 * sizeof(char));
+  iptr = *input;
+  str = str_ptr;
+
+  while(*iptr != '\0') {
+    if (*iptr == '$') {
+      iptr++;
+      word = word_ptr;
+      while(*iptr != ' ' && *iptr != '\0')
+        *word++ = *iptr++;
+      *word = '\0';
+      word = (char *)hash_get(ht, word_ptr);
+      if(!word) {
+        continue;
+      }
+      while(*word != '\0')
+        *str++ = *word++;
+
+      continue;
+    }
+    *str++ = *iptr++;
+  }
+  *str = '\0';
+
+  *input = str_ptr;
+
+  return 0;
+}
+
+int	 get_input(hashtable_t *ht) {
 	int		ret;
 	char	buf;
 	int		i;
@@ -87,19 +93,17 @@ static void	 get_input(hashtable_t *ht) {
 	*(input + i) = '\0';
 	if (!ret) {
     free(ptr);
-		exit_shell();
+    return 1;
 	}
-  exec_command(ht,ptr);
+  if(process_vars(ht, &ptr) != 0) {
+    write(1, "error", 5);
+  }
+  return exec_command(ht,ptr);
 }
 
 void	display_msg(void) {
-	char	*cwd;
-	char	buff[512];
-	char	*parsed_cwd;
 
-	cwd = getcwd(buff, 511);
-  write(1,cwd,strlen(cwd));
-  write(1, " $ ", 3);
+  write(1,"$_>", 3);
 }
 
 void	signal_handler(int signo) {
@@ -114,17 +118,19 @@ int main(int argc, char **argv, char **envv) {
   int		ret;
   char	**commands;
   hashtable_t *ht;
+  int status;
 
   ht = hash_create(64);
 
-  init_envv(argc,argv,envv);
-  while(1) {
+
+  do {
     display_msg();
     signal(SIGINT, signal_handler);
-    get_input(ht);
-  }
+    status = get_input(ht);
+    write(1, "\n", 1);
+  } while (status == 0);
 
-  free(g_envv);
+  write(1, "\n", 1);
 
   return 0;
 }
