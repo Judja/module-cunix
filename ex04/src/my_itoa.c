@@ -8,6 +8,7 @@ char* my_itoa(int nmb) {
 
   if (nmb < 0) {
     nmb = -1 * nmb;
+
     *buf++ = '-';
   }
   n = nmb;
