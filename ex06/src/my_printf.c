@@ -1,9 +1,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
-#include <string.h>
-#include <stdio.h>
 
-unsigned int my_strlen(char *str) {
+unsigned int my_strlen(const char *str) {
   unsigned i;
   for(i = 0; *(str + i) != '\0'; i++);
   return i;
@@ -25,6 +23,7 @@ int my_atoi(const char *nptr) {
     else {
       break;
     }
+
     nptr++;
   }
 
@@ -43,7 +42,6 @@ char* my_itoa(int nmb) {
   }
 
   n = nmb;
-
   while (n > 9) {
     n /= 10;
     i *= 10;
@@ -64,24 +62,29 @@ void append_formatted_str(const char** format, char** str, va_list *arg_list) {
   char *st, *padd_str, *padd_str_start;
   int padding = 0;
   unsigned char symb = 0;
+
   padd_str_start = malloc(16 * sizeof(char));
   padd_str = padd_str_start;
 
   (*format)++;
+
   if(**format == '%'){
     *(*str)++ = '%';
     (*format)++;
     return;
   }
+
   if(**format == '0'){
     symb = '0';
     (*format)++;
   }
+
   while(**format >= '0' && **format <= '9')
     *padd_str++ = *(*format)++;
 
   *padd_str = '\0';
   padding = my_atoi(padd_str_start);
+
   if(**format == 's'){
     st = va_arg(*arg_list, char *);
   }
@@ -89,12 +92,14 @@ void append_formatted_str(const char** format, char** str, va_list *arg_list) {
     int i = va_arg(*arg_list, int);
     st = my_itoa(i);
   }
+
   padding -= strlen(st);
   while(padding-- > 0) *(*str)++ = (symb)?symb:' ';
   while(*st != '\0')
     *(*str)++ = *st++;
 
   (*format)++;
+
   free(padd_str_start);
 }
 
@@ -117,6 +122,7 @@ int my_printf(const char* format, ...) {
     *str++ = *format++;
   }
   *str = '\0';
+
 
   write(1, str_start_ptr, strlen(str_start_ptr));
   va_end(arg_list);
