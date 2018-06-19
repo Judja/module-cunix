@@ -3,25 +3,25 @@ CC					:= gcc
 
 RM					:= rm -rf
 
-LDFLAGS				+= -Llib
+LDFLAGS			+= -Llib
 
-CFLAGS				+= -Iinclude -Wall -Wextra -Werror
+CFLAGS			+= -Iinclude
 
 SRCS				:= $(wildcard src/*.c)
 
 OBJS				:= $(SRCS:.c=.o)
 
-NAME				:= queens_test
+NAME				:= halloc_test
 
 all:				$(NAME)
 
-$(NAME):			$(OBJS)
-						$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LDFLAGS)
+$(NAME):		$(OBJS)
+						$(CC) -o $(NAME) $(OBJS) $(LDFLAGS)
 
 clean:
 						$(RM) $(OBJS)
 
-fclean: 			clean
+fclean: 		clean
 						$(RM) $(NAME)
 
 re: 				fclean all

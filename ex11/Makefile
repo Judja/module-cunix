@@ -1,33 +1,33 @@
-
 CC					:= gcc
 
 RM					:= rm -rf
 
-LDFLAGS				+= -Llib
+LDFLAGS			+= -Llib
 
-CFLAGS				+= -Iinclude -Wall -Wextra -Werror -g
+CFLAGS			+= -Iinclude -g
 
 SRCS				:= $(wildcard src/*.c)
 
 OBJS				:= $(SRCS:.c=.o)
 
-NAME				:= binary_tree
+NAME				:= minishell
 
 all:				$(NAME)
 
-$(NAME):			$(OBJS)
+$(NAME):		$(OBJS)
 						$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LDFLAGS)
 
 clean:
 						$(RM) $(OBJS)
 
-fclean: 			clean
+fclean: 		clean
 						$(RM) $(NAME)
 
 re: 				fclean all
 
 test:				re
-						@(./$(NAME) && echo "Test success" || echo "Test Fails")
+						@(./$(NAME) < input > output )
+						@(diff -q verif output && echo "Test success" || echo "Test Fails")
 
-debug:				re
+debug:			re
 						valgrind -v --leak-check=full --track-origins=yes ./$(NAME)
