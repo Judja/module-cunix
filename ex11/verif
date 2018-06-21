@@ -5,7 +5,6 @@ $_>hello silly billy
 $_>
 CAT: billy
 VAR: hello
-$_>file1 file2 lvl2 
-$_>file1 file2 
+$_>file2 file1 lvl2 
+$_>file2 file1 
 $_>
-

@@ -2,7 +2,7 @@
 # define  HASH_H_
 
 typedef struct  hashtable {
-  unsigned int  size;
+  int  size;
   void          **table;
   // int           backend_type; //0 noop for test, 1 linkedlist, 2 tree
   //void          (*fcreate)();
@@ -11,7 +11,7 @@ typedef struct  hashtable {
   //void          (*fhash)(char *k);
 }               hashtable_t;
 
-hashtable_t     *hash_create(unsigned int size);
+hashtable_t     *hash_create(int size);
 void            hash_destroy(hashtable_t *ht);
 unsigned int    hash_func(char *key);
 
