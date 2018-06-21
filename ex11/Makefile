@@ -1,6 +1,3 @@
-
-# vim: noai:ts=4:sw=4
-
 CC					:= gcc
 
 RM					:= rm -rf
@@ -13,26 +10,24 @@ SRCS				:= $(wildcard src/*.c)
 
 OBJS				:= $(SRCS:.c=.o)
 
-NAME				:= puts_test
+NAME				:= minishell
 
 all:				$(NAME)
 
 $(NAME):			$(OBJS)
-						$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LDFLAGS)
+					$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LDFLAGS)
 
 clean:
 						$(RM) $(OBJS)
-						$(RM) output.test
 
-fclean: 			clean
+fclean: 		clean
 						$(RM) $(NAME)
 
 re: 				fclean all
 
 test:				re
-						$(shell ./$(NAME) > output.test)
-						@(diff -q output.verif output.test && echo "Test success" || echo "Test Fails")
+						@(./$(NAME) < input > output )
+						@(diff -q verif output && echo "Test success" || echo "Test Fails")
 
-debug:              $(NAME)
+debug:				$(NAME)
 					valgrind -v --leak-check=full --track-origins=yes ./$(NAME)
-
