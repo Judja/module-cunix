@@ -20,6 +20,7 @@ int exec_command(hashtable_t *ht,char *input) {
   str = malloc(32 * sizeof(char));
   str_ptr = str;
 
+
   while(*input != '\0') {
     if(*input == ' ') {
       *str = '\0';
