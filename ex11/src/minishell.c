@@ -1,5 +1,14 @@
 #include "minishell.h"
 
+/*
+ * Works:
+ * Redirection to file (>)
+ * Vars subtitution ($)
+ * looking for binaries in own PATH
+ * echo and ls are binaries
+ * export and env are built-ins
+ */
+
 int process_vars(hashtable_t *ht, char **input) {
   char *iptr, *str_ptr, *str;
   char *word, *word_ptr;
@@ -69,9 +78,13 @@ void	signal_handler(int signo) {
 
 int main() {
   hashtable_t *ht;
+  char cwd[1024];
   int status;
 
   ht = hash_create(64);
+  getcwd(cwd, sizeof(cwd));
+  strcat(cwd, "/bin/");
+  hash_set(ht, "PATH", cwd);
 
   do {
     display_msg();

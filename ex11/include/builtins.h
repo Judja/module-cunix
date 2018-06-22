@@ -11,8 +11,9 @@ int exec(hashtable_t* env, char* input);
 
 int exec_command(hashtable_t* env, char* input);
 
-int exec_command_to_file(hashtable_t* env, char* input, char* file);
+int exec_command_to_file(hashtable_t* env, char* input, char* file);//works
 
-int exec_with_pipe(hashtable_t* env, char* input);
+int exec_bin(hashtable_t* env, char* command, char* input);
+//int exec_with_pipe(hashtable_t* env, char* input);
 
 #endif

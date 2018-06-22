@@ -2,7 +2,6 @@ echo hello
 export VAR=hello
 export CAT=billy
 echo $VAR silly $CAT
-env
 ls lstest
 ls lstest/lvl2
 exit

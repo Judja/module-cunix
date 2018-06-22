@@ -40,7 +40,6 @@ int exec_command(hashtable_t *ht,char *input) {
     }
     *str++ = *input++;
   }
-  *str = '\0';
 
   if (strcmp("env", str_ptr) == 0)
     env(ht);
@@ -48,25 +47,38 @@ int exec_command(hashtable_t *ht,char *input) {
     export(ht, input);
   else if (strcmp("exit", str_ptr) == 0)
     return 1;
-  else if(strcmp("ls", str_ptr) == 0 || strcmp("echo", str_ptr) == 0) {
-    int pid = fork();
-    if (pid == 0) {
-      execl(str_ptr, str_ptr, input, NULL);
-    }
-    else {
-      wait(NULL);
-    }
+  else {
+  	exec_bin(ht, str_ptr, input);
   }
-  else
-    printf("Command not found: %s\n", str_ptr);
+  free(str_ptr);
 
   write(1, "\n", 1);
   return 0;
 }
 
+int exec_bin(hashtable_t* env, char* command, char* args) {
+  char* path = malloc(1024 * sizeof(char));
+  strcpy(path, hash_get(env, "PATH"));
+  
+  strcat(path, command);
+
+  if (access(path, X_OK) != -1) {
+    int pid = fork();
+    
+    if (pid == 0)
+      execl(path, path, args, NULL);
+    else
+      wait(NULL);
+  } else {
+    write(2, "Command not found", 17);
+  }
+  
+  return 0;
+}
+
 int exec_command_to_file(hashtable_t *ht,char *input, char* file) {
      int out = open(file, O_RDWR|O_CREAT|O_TRUNC, 0600);
-     if (-1 == out) { perror("opening cout.log"); return 255; }
+     if (-1 == out) { perror("cannot open file"); return 255; }
 
       int save_out = dup(fileno(stdout));
       if (-1 == dup2(out, fileno(stdout))) { perror("cannot redirect stdout"); return 255; }
