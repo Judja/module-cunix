@@ -102,7 +102,6 @@ int	 get_input(hashtable_t *ht) {
 }
 
 void	display_msg(void) {
-
   write(1,"$_>", 3);
 }
 
