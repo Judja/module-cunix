@@ -5,9 +5,9 @@ CC					:= gcc
 
 RM					:= rm -rf
 
-LDFLAGS			+= -Llib
+LDFLAGS				+= -Llib
 
-CFLAGS			+= -Iinclude
+CFLAGS				+= -Iinclude -Wall -Wextra -Werror -g
 
 SRCS				:= $(wildcard src/*.c)
 
@@ -17,14 +17,14 @@ NAME				:= puts_test
 
 all:				$(NAME)
 
-$(NAME):		$(OBJS)
-						$(CC) -o $(NAME) $(OBJS) $(LDFLAGS)
+$(NAME):			$(OBJS)
+						$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LDFLAGS)
 
 clean:
 						$(RM) $(OBJS)
 						$(RM) output.test
 
-fclean: 		clean
+fclean: 			clean
 						$(RM) $(NAME)
 
 re: 				fclean all
@@ -32,3 +32,7 @@ re: 				fclean all
 test:				re
 						$(shell ./$(NAME) > output.test)
 						@(diff -q output.verif output.test && echo "Test success" || echo "Test Fails")
+
+debug:              $(NAME)
+					valgrind -v --leak-check=full --track-origins=yes ./$(NAME)
+

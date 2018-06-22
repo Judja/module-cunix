@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include "linked_list.h"
 
-hashtable_t *hash_create(unsigned int size) {
+hashtable_t *hash_create(int size) {
   hashtable_t *new_table;
 
   if (size < 1)
