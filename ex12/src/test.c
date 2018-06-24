@@ -29,7 +29,7 @@ int test_long()
 	}
 	for (int i = 0; i < 1000; i++)
 		free(a[i]);
-  	free(a);
+ 	free(a);
 	return 0;
 }
 
