@@ -3,9 +3,9 @@ CC					:= gcc
 
 RM					:= rm -rf
 
-LDFLAGS			+= -Llib
+LDFLAGS	    		+= -Llib
 
-CFLAGS			+= -Iinclude
+CFLAGS		    	+= -Iinclude -Wall -Wextra -Werror -g
 
 SRCS				:= $(wildcard src/*.c)
 
@@ -15,16 +15,20 @@ NAME				:= strcpy_test
 
 all:				$(NAME)
 
-$(NAME):		$(OBJS)
-						$(CC) -o $(NAME) $(OBJS) $(LDFLAGS)
+$(NAME):		    $(OBJS)
+						$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LDFLAGS)
 
 clean:
 						$(RM) $(OBJS)
 
-fclean: 		clean
+fclean: 		    clean
 						$(RM) $(NAME)
 
 re: 				fclean all
 
 test:				re
 						@(./$(NAME) && echo "Test success" || echo "Test Fails")
+
+debug:              $(NAME)
+					valgrind -v --leak-check=full --track-origins=yes ./$(NAME)
+
