@@ -4,7 +4,7 @@ RM         		  := rm -rf
 
 LDFLAGS   		  += -Llib
 
-CFLAGS    		  += -Iinclude -Wall -Wextra -Werror -g
+CFLAGS    		  += -Iinclude -Wall -Wextra -g
 
 GAME_S		  	  := $(wildcard src/*.c)
 

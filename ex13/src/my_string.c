@@ -11,8 +11,8 @@ stream_t* string_init() {
   new_str = malloc(sizeof(stream_t));
 
   new_str->size = 0;
-  new_str->limit = 1;
-  new_str->str = malloc(sizeof(char));
+  new_str->limit = BUF_SIZE;
+  new_str->str = malloc(new_str->limit);
   new_str->str[0] = '\0';
 
   return new_str;
@@ -20,30 +20,30 @@ stream_t* string_init() {
 
 stream_t* string_create(char *str) {
   stream_t *new_str;
-  int len;
 
-  new_str = malloc(sizeof(stream_t));
+  new_str = string_init();
 
-  len = strlen(str) + 1;
-
-  new_str->size = len - 1;
-  new_str->limit = len;
-  new_str->str = malloc(len * sizeof(char));
-  strcpy(new_str->str, str);
+  string_append(new_str, str);
 
   return new_str;
 }
 
 void string_append(stream_t *ptr, char *str) {
-  int len;
+  int len, len2;
 
   len = strlen(str);
 
   if (len == 0) return;
+  len2 = ptr->size + 1 + len;
 
-  ptr->str = realloc(ptr->str, (len + ptr->limit) * sizeof(char));
+  if (len2 > ptr->limit) {
+    do {
+      ptr->limit = ptr->limit << 1;
+    } while(len2 > ptr->limit);
 
-  ptr->limit += len;
+    ptr->str = realloc(ptr->str, ptr->limit);
+  }
+
   for (int i = 0; i <= len; i++)
     ptr->str[ptr->size + i] = str[i];
 
@@ -55,15 +55,13 @@ void string_destroy(stream_t *ptr) {
   free(ptr);
 }
 
-int main() {
-  stream_t *str1, *str2;
+/*int main() {
+  stream_t *str2, *str1;
 
-  str1 = string_init();
-  string_append(str1, "ttt");
-  str2 = string_create("Halllo");
+  str2 = string_init();
+  string_append(str2, "Halllo");
 
   string_append(str2, " there");
-  printf("%s\n", str1->str);
   string_append(str2, " there");
   string_append(str2, " there");
   string_append(str2, " there");
@@ -98,29 +96,17 @@ int main() {
   string_append(str2, " there");
   string_append(str2, " there");
   string_append(str2, " there");
-  string_append(str2, " there");
-  string_append(str2, " there");
-  string_append(str2, " there");
-  string_append(str2, " there");
-  string_append(str2, " there");
-  string_append(str2, " there");
-  string_append(str2, " there");
-  string_append(str2, " there");
-  string_append(str2, " there");
-  string_append(str2, " there");
-  string_append(str2, " there");
-  string_append(str2, " there");
-  string_append(str2, " there");
-  string_append(str2, " there");
-  string_append(str2, " there");
-  string_append(str2, " there");
-  string_append(str2, " there");
-  string_append(str2, " there");
-  string_append(str2, " there");
+  string_append(str2, "tail");
+
   printf("%s\n", str2->str);
+  printf("size: %d, len: %d, limit: %d\n", str2->size, (int)strlen(str2->str), str2->limit);
 
-  string_destroy(str1);
+  str1 = string_create("tgggggggggggsgsgsgsggsgsggsgsgsggsggsgsgsgsgsgsggsgsgsgsgggsgsgsgsgsggsgsgsgsggsgsgsgsgsgsgsgsgsgsgsggsgsgsgsgsgsgsggsgsgsgsgsgsgsgsgsgsgsgsgsg`k");
+  printf("%s\n", str1->str);
+  printf("size: %d, len: %d, limit: %d\n", str1->size, (int)strlen(str1->str), str1->limit);
+
   string_destroy(str2);
+  string_destroy(str1);
 
   return 0;
-}
+}*/

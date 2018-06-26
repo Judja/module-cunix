@@ -1,14 +1,6 @@
 #ifndef _FILLER_H_
 #define _FILLER_H_
 
-
-typedef struct  map_s
-{
-  int           h;
-  int           w;
-  char          **array;
-}               map_t;
-
 typedef struct  elem_s
 {
   int           h;
@@ -25,15 +17,15 @@ typedef struct  pos_s
 typedef struct  req_s
 {
   char          symbol;
-  map_t         map;
+  elem_t        map;
   elem_t        elem;
 }               req_t;
 
 typedef struct  stream_s
 {
   char          *str;
-  unsigned int  size;
-  unsigned int  limit;
+  int           size;
+  int           limit;
 }               stream_t;
 
 typedef struct  filler_s
@@ -61,8 +53,10 @@ void            print_pos(pos_t p);
 /*Tools*/
 int             set_nonblocking(int fd);
 void            fatal(char *msg);
-void            create_filler(filler_t *filler);
-void            destroy_filler(filler_t *filler);
-void            create_req(req_t *req);
-void            destroy_req(req_t *req);
+void            create_filler(filler_t **filler);
+void            destroy_filler(filler_t **filler);
+void            create_req(req_t **req);
+void            destroy_req(req_t **req);
+void            log_init();
+void            my_log(char *str);
 #endif // _FILLER_H_

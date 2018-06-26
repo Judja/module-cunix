@@ -3,7 +3,7 @@ CC					:= gcc
 
 RM					:= rm -rf
 
-CFLAGS				+= -Iinclude -Wall -Wextra -Werror -g
+CFLAGS				+= -Iinclude -Wall -Wextra -g
 
 SRCS				:= $(wildcard src/*.c)
 
