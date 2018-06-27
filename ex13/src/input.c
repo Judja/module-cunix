@@ -23,4 +23,3 @@ void read_input(filler_t *filler){
   }
 }
 
-

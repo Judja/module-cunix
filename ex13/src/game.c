@@ -17,7 +17,7 @@ void start_game(filler_t *filler) {
   int     ret;
 
   create_req(&req);
-  //set_nonblocking(0);
+  set_nonblocking(0);
 
   while(1) {
     FD_ZERO(&rfds);
@@ -37,20 +37,15 @@ void start_game(filler_t *filler) {
     if(ret < 0){}
 
     if(FD_ISSET(0, &rfds)) {
-      req = read_request(filler);
-
-      if(req != NULL) {
-
-        p = play(req, filler);
-
-        filler->status = 1;
-      }
+      filler->current_stream = string_init();
+      read_input(filler);
+      my_log(filler->current_stream->str);
+      my_log_f("\nTEST: %d\n", filler->current_stream->limit);
+      filler->status = 1;
     }
 
     if(FD_ISSET(1, &wfds)) {
       print_pos(p);
-
-
       filler->status = 0;
       string_destroy(filler->current_stream);
       filler->current_stream = NULL;

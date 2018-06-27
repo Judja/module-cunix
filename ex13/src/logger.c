@@ -2,6 +2,8 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <string.h>
+#include <stdarg.h>
+#include <stdio.h>
 
 #define LOG_MODE 1
 
@@ -33,5 +35,19 @@ void my_log(char *str) {
   write(fd, ptr, len);
 
   close(fd);
+}
+
+void my_log_f(char* format, ...) {
+  if (!LOG_MODE) return;
+  va_list argptr;
+  FILE *fd;
+	
+  fd = fopen("log", "a");
+	
+	va_start(argptr, format);
+  vfprintf(fd, format, argptr);
+  va_end(argptr);
+  
+  fclose(fd);
 }
 

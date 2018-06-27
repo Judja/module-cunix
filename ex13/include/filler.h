@@ -59,4 +59,5 @@ void            create_req(req_t **req);
 void            destroy_req(req_t **req);
 void            log_init();
 void            my_log(char *str);
+void 			my_log_f(char *format, ...);
 #endif // _FILLER_H_

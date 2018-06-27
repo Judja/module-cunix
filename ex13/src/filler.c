@@ -7,7 +7,7 @@
 
 void create_filler(filler_t **filler) {
   *filler = malloc(sizeof(filler_t));
-  (*filler)->current_stream = string_init();
+  //(*filler)->current_stream = string_init();
   (*filler)->status = 0;
   (*filler)->find_enemy = 0;
 }
