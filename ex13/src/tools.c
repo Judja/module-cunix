@@ -48,6 +48,7 @@ content_t     content_init(int width, int height)
   content.w = width;
 
   return content;
+
 }
 
 content_t     content_read(char *source, int pos, int w, int h)

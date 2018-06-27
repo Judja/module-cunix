@@ -61,9 +61,13 @@ void            print_pos(pos_t p);
 /*Tools*/
 int             set_nonblocking(int fd);
 void            fatal(char *msg);
+
 void            create_filler(filler_t *filler);
 void            destroy_filler(filler_t *filler);
 req_t           *create_req();
 void            destroy_req(req_t *req);
 void            printlog(const char *filename, const char *mode, const char *format, ...);
+void            log_init();
+void            my_log(char *str);
+void 			my_log_f(char *format, ...);
 #endif // _FILLER_H_

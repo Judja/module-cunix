@@ -85,7 +85,9 @@ void         start_game(filler_t *filler)
   fd_set     rfds, wfds;
   struct     timeval timeout;
 
+
   printlog("filler.log", "w", "Smart game\n");
+
   set_nonblocking(0);
 
   while(42)
