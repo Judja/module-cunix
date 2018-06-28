@@ -1,47 +1,109 @@
 #include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
 #include <fcntl.h>
+#include <string.h>
+#include <unistd.h>
+#include <stdarg.h>
+#include <stdio.h>
 #include "filler.h"
+#include "my_string.h"
 
-void fatal(char *msg) {
-	dprintf(2, msg);
-	exit(1);
+void      create_filler(filler_t *filler)
+{
+  filler->current_stream = NULL;
+  filler->status = 0;
 }
 
-int check_free_space(elem_t *map, elem_t *new_elem, pos_t p) {
-  for(int i = 0; i < new_elem->h; i++)
-    for(int j = 0; j < new_elem->w; j++)
-      if(new_elem->array[i][j] == '*')
-      {
-        if(i + p.y < map->h && j + p.x < map->w && i + p.y >= 0 && j + p.x >= 0)
-        {
-          if(map->array[i + p.y][j + p.x] != '.')
-            return -1;
-        }
-        else
-         return -1;
-      }
-  return 0;
+void      destroy_filler(filler_t *filler)
+{
+  string_destroy(filler->current_stream);
 }
 
-int check_connection(elem_t *map, elem_t *new_elem, pos_t p, char symbol) {
-  int i_max = map->w - p.y;
-  int j_max = map->h - p.x;
+req_t     *create_req()
+{
+  req_t   *req;
+  req = (req_t *)malloc(sizeof(req_t));
 
-  for(int i = 0; i < new_elem->h; i++)
-    for(int j = 0; j < new_elem->w; j++)
-      if(new_elem->array[i][j] != '.')
-      {
-        if(i + p.y + 1 < map->h && map->array[i + p.y + 1][j + p.x] == symbol)
-            return 0;
-        if (i + p.y - 1 >= 0 && map->array[i + p.y - 1][j + p.x] == symbol)
-            return 0;
-        if (j + p.x + 1 < map->w && map->array[i + p.y][j + p.x + 1] == symbol)
-            return 0;
-        if (j + p.x - 1 >= 0 && map->array[i + p.y][j + p.x - 1] == symbol)
-            return 0;
-      }
-  return -1;
+  return req;
 }
 
+void      destroy_req(req_t *req)
+{
+  content_destroy(&req->map);
+  content_destroy(&req->elem);
+  free(req);
+
+  req = NULL;
+}
+
+content_t     content_init(int width, int height)
+{
+  content_t   content;
+
+  content.array = malloc(height * sizeof(char *));
+
+  for(int i = 0; i < height; i++)
+    content.array[i] = malloc((width + 1) * sizeof(char));
+
+  content.h = height;
+  content.w = width;
+
+  return content;
+}
+
+content_t     content_read(char *source, int pos, int w, int h)
+{
+  content_t   content = content_init(w, h);
+
+  for(int i = 0; i < content.h; i++)
+  {
+    for(int j = 0; j < content.w; j++)
+    {
+      content.array[i][j] = source[pos];
+      pos++;
+    }
+    content.array[i][content.w] = '\0';
+    pos++;
+  }
+
+  return content;
+}
+
+void      content_destroy(content_t *content)
+{
+  for(int i = 0; i < content->h; i++)
+    free(content->array[i]);
+
+  free(content->array);
+  content->array = NULL;
+}
+
+void        printlog(const char *filename, const char *mode, const char *format, ...)
+{
+  va_list   arg;
+  FILE      *logger;
+
+  logger = fopen(filename, mode);
+
+  va_start(arg, format);
+  vfprintf(logger, format, arg);
+  va_end(arg);
+
+  fclose(logger);
+}
+
+int       set_nonblocking(int fd)
+{
+  int     flag;
+
+  flag = fcntl(fd, F_GETFL, 0) | O_NONBLOCK;
+  return fcntl(fd, F_SETFL, flag);
+}
+
+void      fatal(char *msg)
+{
+  int     size = strlen(msg);
+
+  if(msg) write(2, msg, size);
+
+  exit(1);
+}

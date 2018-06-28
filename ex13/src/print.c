@@ -1,14 +1,7 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include "../include/filler.h"
+#include "filler.h"
 
-void 		print_pos(pos_t p)
+void print_pos(pos_t pos)
 {
-	FILE 	*logger;
-
-	dprintf(1, "%d %d", p.x, p.y);
-
-	logger = fopen("filler.log" , "a");
-	fprintf(logger, "Print pos: %d %d\n", p.x, p.y);
-	fclose(logger);
+  dprintf(1, "%i %i", pos.x, pos.y);
 }
