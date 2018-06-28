@@ -41,13 +41,13 @@ void my_log_f(char* format, ...) {
   if (!LOG_MODE) return;
   va_list argptr;
   FILE *fd;
-	
+
   fd = fopen("log", "a");
-	
+
 	va_start(argptr, format);
   vfprintf(fd, format, argptr);
   va_end(argptr);
-  
+
   fclose(fd);
 }
 
