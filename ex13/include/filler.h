@@ -35,7 +35,6 @@ typedef struct  filler_s
   struct        vector_s *possibilities;
   stream_t      *current_stream;
   int           status;
-  int           find_enemy;
   int           l_most;
   int           r_most;
   int           t_most;
@@ -80,6 +79,6 @@ void            my_log(char *str);
 void            my_log_f(char *format, ...);
 /*Strategies*/
 pos_t           init_strategy(req_t *core, filler_t *filler);
-pos_t           tupik(req_t *core, filler_t *filler);
-pos_t           random_attack(req_t *core, filler_t *filler);
+pos_t           hs(req_t *core, filler_t *filler);
+pos_t           randm(req_t *core, filler_t *filler);
 #endif // _FILLER_H_
