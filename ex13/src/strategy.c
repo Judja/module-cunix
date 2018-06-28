@@ -6,13 +6,13 @@
 #include "my_string.h"
 
 pos_t init_strategy(req_t *core, filler_t *filler) {
-  filler->strategy = &randm;
+  filler->strategy = &hs;
   filler->l_most = 0;
   filler->t_most = 0;
   filler->r_most = core->map.w;
   filler->b_most = core->map.h;
 
-  return randm(core, filler);
+  return hs(core, filler);
 }
 
 pos_t hs(req_t *core, filler_t *filler) {

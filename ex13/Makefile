@@ -19,7 +19,7 @@ OBJS_TEST   := $(SRCS_TEST:.c=.o)
 
 OBJS_STR    := $(SRCS_STR:.c=.o)
 
-NAME				:= filler
+NAME				:= dfedorchenko
 
 NAME_TEST   := filler_test
 

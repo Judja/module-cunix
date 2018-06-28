@@ -5,7 +5,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-#define LOG_MODE 1
+#define LOG_MODE 0
 
 void log_init() {
   if(!LOG_MODE) return;
