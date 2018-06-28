@@ -6,8 +6,6 @@
 #include "filler.h"
 #include "my_string.h"
 
-#define BUF_SIZE 64
-
 void read_input(filler_t* filler) {
   char str[BUF_SIZE];
   int num_of_read;
@@ -59,7 +57,7 @@ int read_is_finished(stream_t* buf) {
       }
     }
   }
-  
+
   return -1;
 }
 

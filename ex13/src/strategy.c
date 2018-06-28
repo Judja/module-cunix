@@ -2,45 +2,43 @@
 #include <stdio.h>
 #include <sys/stat.h>
 #include "filler.h"
+#include "vector.h"
 #include "my_string.h"
 
 pos_t init_strategy(req_t *core, filler_t *filler) {
-  filler->strategy = &tupik;
-  return tupik(core, filler);
+  filler->strategy = &random_attack;
+  filler->l_most = 0;
+  filler->t_most = 0;
+  filler->r_most = core->map.w;
+  filler->b_most = core->map.h;
+
+  return random_attack(core, filler);
 }
 
 pos_t tupik(req_t *core, filler_t *filler) {
   pos_t res;
-  FILE *logger;
   res.x = -10;
   res.y = -10;
 
-  logger = fopen("filler.log", "a");
-  fprintf(logger, "Play\n");
-  fprintf(logger, "core->map.h = %d, core->map.w = %d", core->map.h, core->map.w);
-  fclose(logger);
+  gen_p(filler->possibilities, core, filler);
+  res.x = filler->possibilities->buffer[0].pos.x;
+  res.y = filler->possibilities->buffer[0].pos.y;
 
-  for(int i = 0; i < core->map.h; i++)
-    for(int j = 0; j < core->map.w; j++) {
-      logger = fopen("filler.log", "a");
-      fprintf(logger, "Play circle\n");
-      fclose(logger);
-
-      res.x = j;
-      res.y = i;
-
-      if(!check_free_space(&(core->map), &(core->elem), res) && !check_connection(&(core->map), &(core->elem), res, core->symbol)) {
-        logger = fopen("filler.log", "a");
-        fprintf(logger, "RES POS = %d %d\n", res.x, res.y);
-        fclose(logger);
-
-        return res;
-      }
-    }
-
-  if (0) filler->strategy = &tupik; //"Fuck Off" sign for "unused parameter" warnings
-  res.x = -10;
-  res.y = -10;
+  my_log_f("SIZE: %d, x: %d, y:, %d\n", filler->possibilities->size, res.x, res.y);
+  if (0) filler->strategy = &tupik; //"Fuck Off" for "unused parameter" warnings
 
   return res;
 }
+
+pos_t random_attack(req_t *core, filler_t *filler) {
+  pos_t pos;
+
+  pos.x = -1;
+  pos.y = -1;
+
+  gen_p(filler->possibilities, core, filler);
+  pos = pick_rand(filler->possibilities);
+
+  return pos;
+}
+

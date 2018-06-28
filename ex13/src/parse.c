@@ -55,14 +55,14 @@ req_t *parse_all(char *all) {
   pos = find_size(str, all, pos) + 2;
 
   size = parse_size(str);
-  req->map = content_read(all, pos, size.y, size.x);
+  req->map = elem_read(all, pos, size.y, size.x);
 
   pos += req->map.h * (req->map.w + 1);
 
   pos = find_size(str, all, pos) + 2;
 
   size = parse_size(str);
-  req->elem = content_read(all, pos, size.y, size.x);
+  req->elem = elem_read(all, pos, size.y, size.x);
 
   return req;
 }

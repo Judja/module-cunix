@@ -4,7 +4,14 @@
 #include "filler.h"
 #include "my_string.h"
 
-int check_free_space(content_t *map, content_t *new_elem, pos_t pos) {
+int check_placable(elem_t *map, elem_t *new_elem, pos_t pos, char symbol) {
+  if (check_connection(map, new_elem, pos, symbol) == 0 && check_free_space(map, new_elem, pos) == 0)
+    return 1;
+
+  return 0;
+}
+
+int check_free_space(elem_t *map, elem_t *new_elem, pos_t pos) {
   for(int i = 0; i < new_elem->h; i++)
     for(int j = 0; j < new_elem->w; j++)
       if(new_elem->array[i][j] == '*') {
@@ -15,11 +22,11 @@ int check_free_space(content_t *map, content_t *new_elem, pos_t pos) {
         else
          return -1;
       }
-      
+
   return 0;
 }
 
-int check_connection(content_t *map, content_t *new_elem, pos_t pos, char symbol) {
+int check_connection(elem_t *map, elem_t *new_elem, pos_t pos, char symbol) {
   for(int i = 0; i < new_elem->h; i++)
     for(int j = 0; j < new_elem->w; j++)
       if(new_elem->array[i][j] != '.') {
@@ -38,9 +45,9 @@ int check_connection(content_t *map, content_t *new_elem, pos_t pos, char symbol
 
 pos_t play(req_t *core, filler_t *filler) {
   pos_t res;
-  
-  res = filler->strategy(core);
-  
+
+  res = filler->strategy(core, filler);
+
   return res;
 }
 
@@ -49,8 +56,6 @@ void start_game(filler_t *filler) {
   pos_t pos;
   fd_set rfds, wfds;
   struct timeval timeout;
-
-  printlog("filler.log", "w", "Smart game\n");
 
   set_nonblocking(0);
 
@@ -62,8 +67,6 @@ void start_game(filler_t *filler) {
       case 0: FD_SET(0, &rfds); break;
       case 1: FD_SET(1, &wfds); break;
     }
-
-    printlog("filler.log", "a", "Status: %s\n", filler->status ? "writing" : "reading");
 
     timeout.tv_usec = 0;
     timeout.tv_sec = 1;
@@ -80,7 +83,6 @@ void start_game(filler_t *filler) {
     }
 
     if(FD_ISSET(1, &wfds)) {
-      printlog("filler.log", "a", "Position: %i %i\n", pos.x, pos.y);
       print_pos(pos);
 
       string_destroy(filler->current_stream);

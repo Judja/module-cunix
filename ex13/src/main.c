@@ -5,6 +5,7 @@
 int main() {
   filler_t  filler;
 
+  log_init();
   create_filler(&filler);
   start_game(&filler);
 

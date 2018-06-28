@@ -5,16 +5,20 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include "filler.h"
+#include "vector.h"
 #include "my_string.h"
 
 void create_filler(filler_t *filler) {
   filler->current_stream = NULL;
   filler->status = 0;
   filler->strategy = &init_strategy;
+  filler->possibilities = vector_create();
+  my_log_f("\nSIZE: %d\n", filler->possibilities->size);
 }
 
 void destroy_filler(filler_t *filler) {
   string_destroy(filler->current_stream);
+  vector_destroy(filler->possibilities);
 }
 
 req_t *create_req() {
@@ -25,49 +29,48 @@ req_t *create_req() {
 }
 
 void destroy_req(req_t *req) {
-  content_destroy(&req->map);
-  content_destroy(&req->elem);
+  elem_destroy(&req->map);
+  elem_destroy(&req->elem);
   free(req);
 
   req = NULL;
 }
 
-content_t content_init(int width, int height) {
-  content_t   content;
+elem_t elem_init(int width, int height) {
+  elem_t   elem;
 
-  content.array = malloc(height * sizeof(char *));
+  elem.array = malloc(height * sizeof(char *));
 
   for(int i = 0; i < height; i++)
-    content.array[i] = malloc((width + 1) * sizeof(char));
+    elem.array[i] = malloc((width + 1) * sizeof(char));
 
-  content.h = height;
-  content.w = width;
+  elem.h = height;
+  elem.w = width;
 
-  return content;
-
+  return elem;
 }
 
-content_t content_read(char *source, int pos, int w, int h) {
-  content_t content = content_init(w, h);
+elem_t elem_read(char *source, int pos, int w, int h) {
+  elem_t elem = elem_init(w, h);
 
-  for(int i = 0; i < content.h; i++) {
-    for(int j = 0; j < content.w; j++) {
-      content.array[i][j] = source[pos];
+  for(int i = 0; i < elem.h; i++) {
+    for(int j = 0; j < elem.w; j++) {
+      elem.array[i][j] = source[pos];
       pos++;
     }
-    content.array[i][content.w] = '\0';
+    elem.array[i][elem.w] = '\0';
     pos++;
   }
 
-  return content;
+  return elem;
 }
 
-void content_destroy(content_t *content) {
-  for(int i = 0; i < content->h; i++)
-    free(content->array[i]);
+void elem_destroy(elem_t *elem) {
+  for(int i = 0; i < elem->h; i++)
+    free(elem->array[i]);
 
-  free(content->array);
-  content->array = NULL;
+  free(elem->array);
+  elem->array = NULL;
 }
 
 void printlog(const char *filename, const char *mode, const char *format, ...) {
