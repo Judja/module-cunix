@@ -4,8 +4,7 @@
 #include <ctype.h>
 #include "filler.h"
 
-int         find_size(char *dist, char *source, int start)
-{
+int find_size(char *dist, char *source, int start) {
   int       end;
 
   end = start;
@@ -18,11 +17,10 @@ int         find_size(char *dist, char *source, int start)
   return end - 1;
 }
 
-pos_t         parse_size(char *answer)
-{
-  int         i, size;
-  char        *left, *right;
-  pos_t       pos;
+pos_t parse_size(char *answer) {
+  int i, size;
+  char *left, *right;
+  pos_t pos;
 
   size = strlen(answer);
   left = malloc(size);
@@ -44,12 +42,11 @@ pos_t         parse_size(char *answer)
   return pos;
 }
 
-req_t          *parse_all(char *all)
-{
-  req_t        *req;
-  pos_t        size;
-  int          pos = 2;
-  char         str[32];
+req_t *parse_all(char *all) {
+  req_t *req;
+  pos_t size;
+  int pos = 2;
+  char str[32];
 
   req = create_req();
   req->symbol = all[0];

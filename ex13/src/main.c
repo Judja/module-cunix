@@ -2,8 +2,7 @@
 #include "filler.h"
 #include "my_string.h"
 
-int         main()
-{
+int main() {
   filler_t  filler;
 
   create_filler(&filler);

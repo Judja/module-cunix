@@ -26,8 +26,8 @@ typedef struct  req_s
 typedef struct  stream_s
 {
   char          *str;
-  unsigned int  size;
-  unsigned int  limit;
+  int           size;
+  int           limit;
 }               stream_t;
 
 typedef struct  filler_s
@@ -35,6 +35,7 @@ typedef struct  filler_s
   stream_t      *current_stream;
   int           status;
   int           find_enemy;
+  pos_t			    (*strategy)(req_t *req, struct filler_s *filler);
 }               filler_t;
 
 /*Functions for reading*/
@@ -53,7 +54,9 @@ void            content_destroy(content_t *content);
 
 /*Functions for game logic*/
 void            start_game(filler_t *filler);
-pos_t           play(req_t *core);
+pos_t           play(req_t *core, filler_t *filler);
+int             check_free_space(content_t *map, content_t *new_elem, pos_t pos);
+int             check_connection(content_t *map, content_t *new_elem, pos_t pos, char symbol)
 
 /*Functions for printing*/
 void            print_pos(pos_t p);
@@ -69,5 +72,8 @@ void            destroy_req(req_t *req);
 void            printlog(const char *filename, const char *mode, const char *format, ...);
 void            log_init();
 void            my_log(char *str);
-void 			my_log_f(char *format, ...);
+void            my_log_f(char *format, ...);
+/*Strategies*/
+pos_t           init_strategy(req_t *core, filler_t *filler);
+pos_t           tupik(req_t *core, filler_t *filler);
 #endif // _FILLER_H_
