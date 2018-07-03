@@ -33,7 +33,7 @@ int test_long()
 	return 0;
 }
 
-int main(int argc, char *argv[])
+int main()
 {
 	test_small();
 	test_long();
