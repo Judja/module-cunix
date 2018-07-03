@@ -5,7 +5,7 @@
 #include "my_string.h"
 
 int check_placable(elem_t *map, elem_t *new_elem, pos_t pos, char symbol) {
-  if (check_connection(map, new_elem, pos, symbol) == 0 && check_free_space(map, new_elem, pos) == 0)
+  if (check_free_space(map, new_elem, pos) == 0 && check_connection(map, new_elem, pos, symbol) == 0)
     return 1;
 
   return 0;

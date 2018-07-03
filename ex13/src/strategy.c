@@ -20,8 +20,9 @@ pos_t hs(req_t *core, filler_t *filler) {
   res.x = -10;
   res.y = -10;
 
-  gen_p(filler->possibilities, core, filler);
-  res = pick_hs(filler, core);
+  gen_p(filler->possibilities, core);
+  compute_score(filler->possibilities, core);
+  res = pick_hs(filler->possibilities);
 
   my_log_f("SIZE: %d, x: %d, y:, %d\n", filler->possibilities->size, res.x, res.y);
 
@@ -34,11 +35,10 @@ pos_t randm(req_t *core, filler_t *filler) {
   pos.x = -1;
   pos.y = -1;
 
-  gen_p(filler->possibilities, core, filler);
+  gen_p(filler->possibilities, core);
 
   pos = pick_rand(filler->possibilities);
 
   return pos;
 }
-
 
