@@ -44,7 +44,7 @@ struct block_meta *request_space(struct block_meta* last, size_t size) {
 
 void split_block(struct block_meta *b, size_t s) {
   struct block_meta *new;
-  new = b->data + s;
+  new = (struct block_meta*)(b->data + s);
   new->size = b->size - s - META_SIZE ;
   new->next = b->next;
   new->free = 1;
