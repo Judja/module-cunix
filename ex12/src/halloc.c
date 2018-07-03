@@ -102,12 +102,12 @@ struct block_meta *get_block_ptr(void *ptr) {
 }
 
 struct block_meta* merge_with_next(struct block_meta *ptr) {
-  ptr->size = ptr->size + META_SIZE + ptr->next->size;
+ /* ptr->size = ptr->size + META_SIZE + ptr->next->size;
   ptr->next = ptr->next->next;
 
   if (ptr->next)
     ptr->next->prev = ptr;
-
+*/
   return ptr;
 }
 
