@@ -8,11 +8,10 @@ struct block_meta {
   size_t size;
   struct block_meta *next;
   int free;
-  char data[1];
 };
 
 #define META_SIZE sizeof(struct block_meta)
-#define align4(x) (((((x) -1) >>2) << 2)+4)
+#define align4(x) (((((x) - 1) >> 2) << 2) + 4)
 
 void *global_base = NULL;
 
@@ -29,7 +28,7 @@ struct block_meta *request_space(struct block_meta* last, size_t size) {
   struct block_meta *block;
   block = sbrk(0);
   void *request = sbrk(size + META_SIZE);
-  if (request == (void*) -1) {
+  if (request == (void*)(-1)) {
     return NULL; // sbrk failed.
   }
 
@@ -44,8 +43,8 @@ struct block_meta *request_space(struct block_meta* last, size_t size) {
 
 void split_block(struct block_meta *b, size_t s) {
   struct block_meta *new;
-  new = (struct block_meta*)(b->data + s);
-  new->size = b->size - s - META_SIZE ;
+  new = (struct block_meta*)(b + META_SIZE + s);
+  new->size = b->size - s - META_SIZE;
   new->next = b->next;
   new->free = 1;
   b->size = s;
@@ -99,6 +98,7 @@ int list_len() {
 
   return res;
 }
+
 void merge_free(struct block_meta *base) {
   struct block_meta *prev, *cur;
   if(!base) return;
