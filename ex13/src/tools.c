@@ -73,19 +73,6 @@ void elem_destroy(elem_t *elem) {
   elem->array = NULL;
 }
 
-void printlog(const char *filename, const char *mode, const char *format, ...) {
-  va_list arg;
-  FILE *logger;
-
-  logger = fopen(filename, mode);
-
-  va_start(arg, format);
-  vfprintf(logger, format, arg);
-  va_end(arg);
-
-  fclose(logger);
-}
-
 int set_nonblocking(int fd) {
   int flag;
 

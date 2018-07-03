@@ -3,35 +3,30 @@
 
 #define BUF_SIZE 1024
 
-typedef struct elem_s
-{
+typedef struct elem_s {
   int           h;
   int           w;
   char          **array;
 }               elem_t;
 
-typedef struct  pos_s
-{
+typedef struct  pos_s {
   int           x;
   int           y;
 }               pos_t;
 
-typedef struct  req_s
-{
+typedef struct  req_s {
   char          symbol;
   elem_t        map;
   elem_t        elem;
 }               req_t;
 
-typedef struct  stream_s
-{
+typedef struct  stream_s {
   char          *str;
   int           size;
   int           limit;
 }               stream_t;
 
-typedef struct  filler_s
-{
+typedef struct  filler_s {
   struct        vector_s *possibilities;
   stream_t      *current_stream;
   int           status;
@@ -39,7 +34,7 @@ typedef struct  filler_s
   int           r_most;
   int           t_most;
   int           b_most;
-  pos_t			    (*strategy)(req_t *req, struct filler_s *filler);
+  pos_t         (*strategy)(req_t *req, struct filler_s *filler);
 }               filler_t;
 
 /*Functions for reading*/

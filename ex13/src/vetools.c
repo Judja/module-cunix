@@ -44,6 +44,8 @@ void compute_score(vector_t *vector, req_t *core) {
         else sum += 3;
       }
     }
+
+    vector->buffer[ind].score = sum;
   }
 }
 
