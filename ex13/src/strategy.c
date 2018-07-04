@@ -20,10 +20,8 @@ pos_t hs(req_t *core, filler_t *filler) {
 
   gen_p(filler->possibilities, core);
 
-  if (filler->possibilities->size  < 3) {
+  if (filler->possibilities->size  < 3)
     filler->strategy = &painter;
-    return painter(core, filler);
-  }
 
   compute_score(filler->possibilities, core);
   pos = pick_hs(filler->possibilities);
