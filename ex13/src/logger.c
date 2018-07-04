@@ -11,7 +11,7 @@ void log_init() {
   if(!LOG_MODE) return;
   int fd;
 
-  fd = open("log", O_RDWR|O_CREAT|O_TRUNC);
+  fd = open("log", O_CREAT|O_TRUNC);
   close(fd);
 }
 

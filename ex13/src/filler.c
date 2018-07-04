@@ -13,7 +13,6 @@ void create_filler(filler_t *filler) {
   filler->status = 0;
   filler->strategy = &init_strategy;
   filler->possibilities = vector_create();
-  my_log_f("\nSIZE: %d\n", filler->possibilities->size);
 }
 
 void destroy_filler(filler_t *filler) {

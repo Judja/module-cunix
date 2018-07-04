@@ -32,16 +32,16 @@ void compute_score(vector_t *vector, req_t *core) {
 
     for (int i = 0; i < r * 2 + core->elem.h; i++) {
       for (int j = 0; j < r * 2 + core->elem.w; j++) {
-        if ((j + l < 0 || j + l >= core->map.w) && (sum += 2))
+        if ((j + l < 0 || j + l >= core->map.w) && (sum += 1))
           continue;
-        if ((t + i < 0 || t + i >= core->map.h) && (sum += 2))
+        if ((t + i < 0 || t + i >= core->map.h) && (sum += 1))
           continue;
 
         ch = core->map.array[t + i][j + l];
 
         if (ch == '.') sum += 1;
         else if (ch == core->symbol) sum += 0;
-        else sum += 3;
+        else sum += 11;
       }
     }
 

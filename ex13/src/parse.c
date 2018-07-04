@@ -5,7 +5,7 @@
 #include "filler.h"
 
 int find_size(char *dist, char *source, int start) {
-  int       end;
+  int end;
 
   end = start;
   while(source[end] != '\n')

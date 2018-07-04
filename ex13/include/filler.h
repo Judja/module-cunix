@@ -75,5 +75,6 @@ void            my_log_f(char *format, ...);
 /*Strategies*/
 pos_t           init_strategy(req_t *core, filler_t *filler);
 pos_t           hs(req_t *core, filler_t *filler);
-pos_t           randm(req_t *core, filler_t *filler);
+pos_t           painter(req_t *core, filler_t *filler);
+pos_t           go_center(req_t *core, filler_t * filler);
 #endif // _FILLER_H_
