@@ -6,6 +6,11 @@
 #include "filler.h"
 #include "my_string.h"
 
+void print_pos(pos_t pos) {
+  my_log_f("POSITION: %d, %d\n", pos.x, pos.y);
+  dprintf(1, "%d %d", pos.x, pos.y);
+}
+
 void read_input(filler_t* filler) {
   char str[BUF_SIZE];
   int num_of_read;
