@@ -26,6 +26,6 @@ void vector_push(vector_t *vector, possib_t possib) {
 
   if (vector->size == vector->limit) {
     vector->limit = vector->limit << 1;
-    vector->buffer = realloc(vector->buffer, vector->limit);
+    vector->buffer = realloc(vector->buffer, vector->limit * sizeof(possib_t));
   }
 }

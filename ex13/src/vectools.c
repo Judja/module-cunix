@@ -8,8 +8,8 @@ void gen_p(vector_t *vector, req_t *core) {
   possib.score = 0;
   vector_reset(vector);
 
-  for (int i = 0; i < core->map.h; i++) {
-    for (int j = 0; j < core->map.w; j++) {
+  for (int i = 0; i <= core->map.h - core->elem.h; i++) {
+    for (int j = 0; j <= core->map.w - core->elem.w; j++) {
       p.x = j;
       p.y = i;
       if (check_placable(&core->map, &core->elem, p, core->symbol)) {
@@ -21,7 +21,7 @@ void gen_p(vector_t *vector, req_t *core) {
 }
 
 void compute_score(vector_t *vector, req_t *core) {
-  int r = 10;
+  int r = 5;
   int l, t, sum;
   char ch;
 
@@ -30,11 +30,11 @@ void compute_score(vector_t *vector, req_t *core) {
     t = vector->buffer[ind].pos.y - r;
     sum = 0;
 
-    for (int i = 0; i < r * 2; i++) {
-      for (int j = 0; j < r * 2; j++) {
-        if (j + l < 0 || j + l >= core->map.w)
+    for (int i = 0; i < r * 2 + core->elem.h; i++) {
+      for (int j = 0; j < r * 2 + core->elem.w; j++) {
+        if ((j + l < 0 || j + l >= core->map.w) && (sum += 2))
           continue;
-        if (t + i < 0 || t + i >= core->map.h)
+        if ((t + i < 0 || t + i >= core->map.h) && (sum += 2))
           continue;
 
         ch = core->map.array[t + i][j + l];
