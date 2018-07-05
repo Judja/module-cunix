@@ -3,25 +3,19 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <stdio.h>
-
-struct block_meta {
-  size_t size;
-  struct block_meta *next;
-  struct block_meta *prev;
-  int free;
-};
+#include "test.h"
 
 #define META_SIZE sizeof(struct block_meta)
-#define align4(x) (((((x) - 1) >> 2) << 2) + 4)
+#define align8(x) (((((x) - 1) >> 3) << 3) + 8)
 
 void *global_base = NULL;
 
-struct block_meta *find_free_block(struct block_meta **last, size_t size) {
+struct block_meta *find_my_free_block(struct block_meta **last, size_t size) {
   struct block_meta *current;
 
   current = global_base;
 
-  while (current && !(current->free && current->size >= size)) {
+  while (current && !(current->my_free && current->size >= size)) {
     *last = current;
     current = current->next;
   }
@@ -32,6 +26,10 @@ struct block_meta *find_free_block(struct block_meta **last, size_t size) {
 struct block_meta *request_space(struct block_meta* last, size_t size) {
   struct block_meta *block;
   void *request;
+
+  if(last == NULL) {
+    printf("size is: %lu, METASIZE is : %lu , sbrk(0): %p\n", size, META_SIZE, sbrk(0));
+  }
 
   block = sbrk(0);
   request = sbrk(size + META_SIZE);
@@ -44,7 +42,7 @@ struct block_meta *request_space(struct block_meta* last, size_t size) {
 
   block->size = size;
   block->next = NULL;
-  block->free = 0;
+  block->my_free = 0;
   block->prev = last;
 
   return block;
@@ -58,7 +56,7 @@ void split_block(struct block_meta *b, size_t s) {
   new->next = b->next;
   new->prev = b;
   new->next->prev = new;
-  new->free = 1;
+  new->my_free = 1;
   b->size = s;
   b->next = new;
 }
@@ -69,9 +67,10 @@ void *halloc(size_t size) {
   if (size <= 0)
     return NULL;
 
-  size = align4(size);
+  size = align8(size);
 
   if (!global_base) { // First call.
+    printf("FIRST CALL, size is %lu\n", size);
     block = request_space(NULL, size);
     if (!block)
       return NULL;
@@ -81,20 +80,22 @@ void *halloc(size_t size) {
   }
   else {
     last = global_base;
-    block = find_free_block(&last, size);
-    if (!block) { // Failed to find free block.
+    block = find_my_free_block(&last, size);
+    if (!block) { // Failed to find my_free block.
       block = request_space(last, size);
       if (!block)
         return NULL;
     }
-    else {      // Found free block
-      if ((block->size - size) >= (META_SIZE + 4))
+    else {      // Found my_free block
+      if ((block->size - size) >= (META_SIZE + 8))
         split_block(block, size);
-      block->free = 0;
+      block->my_free = 0;
     }
   }
 
-  return(block+1);
+  block->ptr = (block + 1);
+
+  return block->ptr;
 }
 
 struct block_meta *get_block_ptr(void *ptr) {
@@ -111,7 +112,7 @@ struct block_meta* merge_with_next(struct block_meta *ptr) {
   return ptr;
 }
 
-void free(void *ptr) {
+void my_free(void *ptr) {
   struct block_meta* block_ptr;
 
   if (!ptr)
@@ -119,15 +120,18 @@ void free(void *ptr) {
 
   block_ptr = get_block_ptr(ptr);
 
-  if (block_ptr->prev && block_ptr->prev->free)
+  if (block_ptr->ptr != ptr) //trying to my_free invalid pointer
+    return;
+
+  if (block_ptr->prev && block_ptr->prev->my_free)
     block_ptr = merge_with_next(block_ptr->prev);
 
-  if (block_ptr->next && block_ptr->next->free)
+  if (block_ptr->next && block_ptr->next->my_free)
     block_ptr = merge_with_next(block_ptr);
 
-  block_ptr->free = 1;
+  block_ptr->my_free = 1;
 
-  if (!block_ptr->next) {//releasing freed space to system
+  if (!block_ptr->next) {//releasing my_freed space to system
     if (!block_ptr->prev) //the only one elem in linked list
       global_base = NULL;
 
