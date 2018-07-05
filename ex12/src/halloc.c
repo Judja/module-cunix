@@ -27,10 +27,6 @@ struct block_meta *request_space(struct block_meta* last, size_t size) {
   struct block_meta *block;
   void *request;
 
-  if(last == NULL) {
-    printf("size is: %lu, METASIZE is : %lu , sbrk(0): %p\n", size, META_SIZE, sbrk(0));
-  }
-
   block = sbrk(0);
   request = sbrk(size + META_SIZE);
 
@@ -70,7 +66,6 @@ void *halloc(size_t size) {
   size = align8(size);
 
   if (!global_base) { // First call.
-    printf("FIRST CALL, size is %lu\n", size);
     block = request_space(NULL, size);
     if (!block)
       return NULL;
