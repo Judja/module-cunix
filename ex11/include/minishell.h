@@ -1,6 +1,19 @@
 #ifndef MINISHELL_H
 #define MINISHELL_H
+
+#include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <limits.h>
+#include <errno.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <signal.h>
+#include <fcntl.h>
+#include "hash.h"
+#include "builtins.h"
+
 /*                                    Hints
  * Use "$_>" for prompt
  *
@@ -21,6 +34,5 @@
  * Good luck)
  *
  */
-
 
 #endif
